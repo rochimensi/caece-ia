@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Segmentacion automatica de seguidores de Instagram</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- build:css(.) styles/vendor.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/trix/dist/trix.css" />
+    <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog.css" />
+    <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog-theme-default.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/styles.css">
+    <!-- endbuild -->
+  </head>
+  <body ng-app="clientApp" ng-controller="MainController">
+
+    <!-- Add your site or application content here -->
+    <div class="container">
+      <div ui-view="content"></div>
+    </div>
+
+    <script>
+      var HOST = "http://localhost:3000";
+    </script>
+    <!-- build:js(.) scripts/vendor.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
+    <script src="bower_components/ngstorage/ngStorage.js"></script>
+    <script src="bower_components/trix/dist/trix.js"></script>
+    <script src="bower_components/angular-trix/dist/angular-trix.js"></script>
+    <script src="bower_components/ng-dialog/js/ngDialog.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/checklist-model/checklist-model.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/js-scripts.js"></script>
+
+    <script src="scripts/services/messageService.js"></script>
+
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/login.js"></script>
+    <script src="scripts/controllers/home.js"></script>
+
+    <script src="scripts/directives/inputerror.js"></script>
+    <script src="scripts/directives/pieChart.js"></script>
+
+    <script src="scripts/services/utils.js"></script>
+    <!-- endbuild -->
+</body>
+</html>

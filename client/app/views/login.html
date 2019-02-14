@@ -1,0 +1,40 @@
+<div class='login'>
+  <div class='login_title'>
+    <img src="../images/logo.png"/>
+    <br>
+    <span>Segmentación de seguidores de Instagram</span>
+  </div>
+  <form name="loginform" autocomplete="off">
+    <div class='login_fields'>
+      <div class='login_fields__user'>
+        <div class='icon'>
+          <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/user_icon_copy.png'>
+        </div>
+        <input placeholder='Nombre de Usuario' type='text' autocomplete="off" ng-model="username" required>
+        <div class='validation'>
+          <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/tick.png'>
+        </div>
+        </input>
+      </div>
+      <div class='login_fields__password'>
+        <div class='icon'>
+          <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/lock_icon_copy.png'>
+        </div>
+        <input placeholder='Password' type='password' autocomplete="off" ng-model="password" required>
+        <div class='validation'>
+          <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/tick.png'>
+        </div>
+      </div>
+      <div class="login_error" ng-if="loginError">
+        <span>{{loginError}}</span>
+      </div>
+      <div class='login_fields__submit'>
+        <input type='submit' value='Iniciar Sesión' ng-click="login()" ng-value="submitted ? 'Autorizando..' : 'Iniciar Sesión'"
+        ng-disabled="submitted">
+      </div>
+    </div>
+  </form>
+  <div class='disclaimer'>
+    <p>Sistema de Clasificación de Followers de tu cuenta de Instagram basado en imágenes.<br>Autores: Rosario Mensi y Nicolás García.</p>
+  </div>
+</div>

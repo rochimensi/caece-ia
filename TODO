@@ -1,0 +1,87 @@
+SEGEMENTACIÓN AUTOMATICA DE SEGUIDORES DE INSTAGRAM
+
+Que clase de gente sigo? Experimento con nuestras cuentas de usuarios.
+
+- Crawler con diff. Si ya tengo la info del user, que no me lo vuelva a bajar.
+- Crawlear hasta 500 de sus posts, si son imagenes, descargar. Clasificar y sacar estadistica de las clases obtenidas.
+- Clasificador Multiclase
+- Web o app. UI. Donde se vea el workflow. Cuenta de instagram. Resultados.
+- Clasificar a mano nuestros followers, cosa de poder validar la precision del clasificador. Matriz de confusion.
+Resultado final: un grafico con seguidores, y en que categorias los incluimos.
+Ser creativos con los graficos de resultados.
+- Informe.
+
+- Idealmente comparar con algun otro algoritmo. *Ej: Tensorflow, con Redes y otro naive Bayes. Comparar performance.
+
+=============
+
+Screens en forma de Wizard:
+INICIAR SESION DE INSTAGRAM Done
+SCAN DE FOLLOWERS
+SELECCIONAR ALGORITMO
+RESULTADO DE CLASIFICACIÓN
+VALIDAR RESULTADOS
+
+Scan de Followers:
+- Crawl de followers usernames con Selenium
+- Download de imagenes de nuevos usernames crawleados, no de los cacheados en el txt.
+- Append username a txt para lista de followers cache
+- Se arma un directorio por username en cada downlod: /followers/images/pepito/...jpg Ahí van todas.
+
+Clasificación:
+- El resultado de cada clasificación de user va a un CSV que tenga el mismo formato que el CSV armado manualmente.
+- CSV: username;mujer;hombre;musico;deportista;tecnológico;marca;animales donde cada fila son strings separados por ; con un 1 en la columna que aplique la clase para ese username.
+- Se corre la clasificación para cada clase y cada imagen en el directorio del user. Cada imagen va a arrojar un % de match por clase. Obtener un promedio por clase por username una vez clasificadas todas sus imagenes.
+- Si cada clase tiene un porcentaje >= 60%, colocar un 1 en el CSV para esa clase y username
+
+Resultados:
+- Cuando finaliza la clasificación de un username, ir mostrando sus clases. Se puede abrir un socket para la comunicación server-front
+- Contadores por clase que se actualicen en vivo.
+- Una vez finalizadas las clasificaciones de todos los followers, mostrar gráfico de barras con los count finales. Porcentajes sobre el total de users.
+- Vista de Detalle por user
+
+Validación:
+- Upload CSV con clasificación manual
+- Matriz de Confusión comparando la clasificación manual con el csv del clasificador.
+- Métricas de precisión, etc.
+
+
+================
+
+Env Setup:
+
+- Node >= 8
+- Bower
+- Selenium Chromedriver (added to PATH in Windows `C:\<your path to this project>\server\src\api\controllers`)
+
+===============
+
+NOTAS 6 de Febrero
+
+- Pensar en que esta herramienta puede servirle a un comunity manager o una persona publica para analizar que segmentos de followers tiene.
+QUIEN ES. Primera fase de clasificacion: AUDIENCIA. Sexo Persona o Marca (generico). Img de perfil y Nombre, con peso. Cuanto mejora la prediccion si miro el nombre.
+PREFERENCIAS. Segunda fase de clasificacion: MAS INFORMACION con posts. Gustos, profesion, intereses.
+Documentar resultados de experimentos. Por ej: Cuanto mejoro la prediccion si agrego los posts. Si con la foto de perfil puedo determinar su profesion o interes.
+
+1. Sexo, Marca con Foto de perfil.
+2. Sexo, Marca con Metadata: Nombre.
+3. Prediccion de la profesion con los posts.
+4. Numero ideal de posts a mirar para mejorar la precision de la profesion.
+
+- Resultados: Rediseñar permitiendo filtros dentro de Mujer, Hombre o Generico (Marca). Poder hacer aggregations,
+
+- Validacion: Mejorar UX de metricas. Al CSV prepopularlo con los usernames.
+
+
+INFORME:
+*Bajar template de tesis CAECE. Pateta.
+- Agradecimientos
+- Introduccion: Motivacion, Enfoque propuesto, Organizacion del informe. Problematica de trabajadores de redes para determinar la audiencia.
+Desarrollo::
+- Estado del arte/cuestion, Trabajos relacionados, Enfoques similares
+- Enfoque propuesto. Planteo de la solucion. Herramienta (Manual de usuario en un apendice).
+- Diseño e implementacion. Arqui, tech stack, etc. Apendice si quiero detallar alguna herramienta, ej Tensorflow.
+- Experimentos y Resultados.
+- Conclusiones
+- Apendice
+- Referencias
