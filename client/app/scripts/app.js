@@ -10,10 +10,19 @@ angular
     'ngStorage',
     'ngDialog',
     'angularTrix',
-    'checklist-model'
+    'checklist-model',
+    'countUpModule',
+    'googlechart'
   ])
   .config(statesConfig)
   .config(angularJWTConfig)
+  .value('googleChartApiConfig', {
+    version: '1',
+    optionalSettings: {
+      packages: ['corechart'],
+      language: 'ja'
+    }
+  })
   .run(run);
 
 function angularJWTConfig($httpProvider, jwtOptionsProvider) {

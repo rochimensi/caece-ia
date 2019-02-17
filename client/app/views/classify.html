@@ -1,0 +1,15 @@
+<h1>Clasificación por imágenes</h1>
+<div class="description">
+    <p>El Clasificador consiste en un modelo previamente entrenado con una determinada cantidad de categorías de clasificación y su
+        algoritmo clasificador.</p>
+    <p>Cada imagen persistida en el paso anterior será analizada por el clasificador y categorizada dentro de las clases
+        que contenga el modelo.</p>
+    <p>El clasificador está implementado como una red neuronal convolucional (CNN).</p>
+    <div class="clasificador_diagrama">
+        <img src="../images/clasificador.png">
+    </div>
+    <div class="spinner_container">
+        <div class="spinner"></div>
+    </div>
+</div>
+<a class="button_cta" ng-if="!controls.isLoading" ng-click="controls.step = 'results';">Siguiente paso</a>

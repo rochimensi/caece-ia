@@ -16,6 +16,7 @@ body {
   /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EA5C54 ', endColorstr='#bb6dec',GradientType=1 );
   /* IE6-9 fallback on horizontal gradient */
+  overflow-x: hidden;
 }
 body ::-webkit-input-placeholder {
   color: #4E546D;
@@ -257,7 +258,6 @@ HOME
   padding: 3% 0 1.5%;
   color: white;
   text-align: center;
-  background: linear-gradient(45deg, #35394a 0%, #1f222e 100%);
 }
 .wrapper .header p {
   color: white;
@@ -278,10 +278,8 @@ HOME
 }
 .wrapper .header li {
   border-radius: 50px;
-  background: transparent;
   padding: 10px 50px;
-  border: 2px solid #DC6180;
-  color: #DC6180;
+  color: #ffffff;
   text-transform: uppercase;
   font-size: 12px;
   width: 160px;
@@ -325,6 +323,24 @@ HOME
 /*
 COUNT
  */
+.results_container_header .results_counter h2 {
+  font-size: 6em;
+  margin-bottom: 0;
+}
+.results_container_header .results_counter {
+  margin-top: 6%;
+}
+
+.results_container_header .results_counter span,
+.results_pieChart span,
+.results_container_title{
+  font-size: 2em;
+}
+
+.results_pieChart {
+  margin: 12% 0;
+}
+
 .count_followers {
   display: flex;
   align-items: center;
@@ -362,6 +378,8 @@ COUNT
 RESULTS FILTERS
  */
 .results_container {
+  margin-top: 7%;
+  margin-bottom: 4%;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -407,15 +425,14 @@ RESULTS FILTERS
   background-color: transparent;
 }
 
-.results_metrics ul {
-  list-style: none;
+.results_metrics_filters {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-top: 0;
+  margin-bottom: 50px;
 }
 
-.results_metrics ul li {
+.results_metrics .results_metrics_filters span {
   border-radius: 50px;
   margin-right: 2%;
   padding: 6px 20px;
@@ -424,7 +441,45 @@ RESULTS FILTERS
   font-size: 12px;
 }
 
+.results_metrics .results_counter {
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  padding: 40px;
+  background-color: #e8eaed;
+  border: 1px solid #e8eaed;
+  border-radius: 999px;
+}
 
+.results_metrics .results_counter h2 {
+  width: 100%;
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.results_metrics_top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.barChart-container {
+  margin-left: 2%;
+}
+
+.results_metrics_bottom {
+  margin-top: 10%;
+}
+
+.results_metrics_bottom th,
+.results_metrics_bottom td {
+  font-weight: normal;
+  padding: 10px 30px;
+}
+
+.results_metrics_bottom tbody tr:nth-child(odd) {
+  background-color: #f8f8f8;
+}
 /*
 BARS
  */
@@ -538,83 +593,90 @@ CONFUSION MATRIX
 }
 .confusionMatrix{
   color: #555555;
-  background-color: #eee;
+  background-color: transparent;
   border-collapse: collapse;
+
+  margin-right: 4%;
 }
 .confusionMatrix  table,.confusionMatrix  th,.confusionMatrix  td {
   text-align:center;
-  padding:10px;
+  padding:20px;
 }
-.confusionMatrix th,.confusionMatrix  td{
-  background-color: #eee;
-}
-
+/*.confusionMatrix th,.confusionMatrix  td{
+  background-color: transparent;
+}*/
+/*
 .confusionMatrix td:last-child, .confusionMatrix tr:last-child td, .confusionMatrix tr:first-child td:last-child{
   background-color: #fff;
   color: #555555;
 }
 .confusionMatrix td:first-child,.confusionMatrix tr:first-child td{
   color: #555555;
-  background-color: #eee;
-}
+  background-color: transparent;
+}*/
 
 .confusionMatrix .actual{
   transform: rotate(-90deg);
   transform-origin: left right 0;
 }
 
-.red {
-  color: #cf0000;
-}
-
-.green {
-  color: rgba(81, 175, 48, 0.92);
-}
-
-.metricas ul {
-  text-align: left;
-  list-style: none;
-}
 .validation {
   margin-bottom: 10%;
+  margin-top: 10%;
+}
+
+.metricas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metricas .metrica {
+  transition: box-shadow .3s;
+  width: 100px;
+  height: 100px;
+  border-radius: 999px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 40px;
+  background-color: #e8eaed;
+}
+
+.metricas .metrica:hover {
+  box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
+
+.metricas .metrica h2 {
+  margin: 0 auto;
+}
+
+.error {
+  color: white;
+  background-color: #f18189 !important;
+}
+
+.accuracy {
+  color: white;
+  background-color: rgba(140, 194, 111, 0.92) !important;
 }
 
 /*
-PIE CHARTS
+AUDIENCE
  */
-.piechart_container {
-  height: 300px;
-  width: 300px;
-}
-
-.ct-series-a .ct-slice-donut {
-  stroke: #DC6180;
-}
-
-.ct-series-b .ct-slice-donut {
-  stroke: #8592dc;
-}
-
-.ct-series-c .ct-slice-donut {
-  stroke: #d68ddc;
-}
 
 .mujeres {
-  background-color: #DC6180 !important;
+  background-color: #e29fb5 !important;
+  color: #ffffff !important;
 }
 
 .hombres {
-  background-color: #8592dc !important;;
+  background-color: #a2c0e2 !important;
+  color: #ffffff !important;
 }
 
 .generico {
-  background-color: #d68ddc !important;;
-}
-
-.ct-label {
-  fill: white;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 1;
+  background-color: #797979 !important;
+  color: #ffffff !important;
 }

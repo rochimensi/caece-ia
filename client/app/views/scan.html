@@ -1,0 +1,24 @@
+<h1>Escaneo de Followers</h1>
+<div class="description">
+    <p>El primer paso consiste en el recorrido de la lista de tus seguidores y la descarga de sus imágenes de perfil y posts.</p>
+    <p>Este proceso está automatizado con Selenium Webdriver. Selenium es un entorno de pruebas de software para
+        aplicaciones basadas en la web que emula acciones de usuarios.</p>
+    <p ng-if="controls.isLoading">Aguarda mientras se descargan todas las imágenes..</p>
+</div>
+<div ng-if="controls.isLoading" class="spinner_container">
+    <div class="spinner"></div>
+</div>
+
+<div class="count_followers" ng-if="!controls.isLoading">
+    <div class="counter">
+        <i class="fa fa-address-book fa-2x"></i>
+        <h2 class="timer count-title count-number">300</h2>
+        <p class="count-text ">Seguidores detectados</p>
+    </div>
+    <div class="counter">
+        <i class="fa fa-image fa-2x"></i>
+        <h2 class="timer count-title count-number">2385</h2>
+        <p class="count-text ">Imágenes descargadas</p>
+    </div>
+</div>
+<a class="button_cta" ng-if="!controls.isLoading" ng-click="controls.step = 'classify';">Siguiente paso</a>
