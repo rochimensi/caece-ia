@@ -5,9 +5,9 @@
     .module('clientApp')
     .controller('HomeController', HomeController);
 
-  HomeController.$inject = ['$scope', '$localStorage', '$http', 'Utils'];
+  HomeController.$inject = ['$scope', '$localStorage', '$http', '$window', 'Utils'];
 
-  function HomeController($scope, $localStorage, $http, Utils) {
+  function HomeController($scope, $localStorage, $http, $window, Utils) {
 
     $scope.username = $localStorage.data.username;
     $scope.profileImg = $localStorage.data.profileImg;
@@ -15,7 +15,7 @@
     $scope.controls = {
       isLoading: false,
       reachedEnd: true, //TODO initialize as false
-      step: 'validate'
+      step: 'scan'
     };
 
     $scope.audienceSelection = ['generico', 'hombres', 'mujeres'];
@@ -177,9 +177,20 @@
     $scope.animateBars = animateBars;
     $scope.toggleSelection = toggleSelection;
     $scope.refreshAudience = refreshAudience;
+    $scope.scrollToTop = scrollToTop;
+    $scope.quit = quit;
 
-    refreshAudience();
-    //scan();
+    //refreshAudience();
+    scan();
+
+    function scrollToTop() {
+      $window.scrollTo(0, 0);
+    }
+
+    function quit() {
+      delete $localStorage.data;
+      $scope.go('login');
+    }
 
     function downloadCSV() {
       // TODO: populate with usernames from scan
@@ -216,11 +227,9 @@
     }
 
     function refreshAudience() {
-      var newData = [];
       $scope.audienceSelection.forEach(function(audience) {
         newData.push($scope.audience[audience]);
       });
-      $scope.pieChart = newData;
     }
 
     function scan() {

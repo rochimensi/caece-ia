@@ -28,6 +28,7 @@
     "moment-timezone": "^0.5.13",
     "mongoose": "5.2.0",
     "morgan": "^1.8.1",
+    "q": "^1.5.1",
     "request-promise": "^4.2.2",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "socket.io": "^2.2.0",
