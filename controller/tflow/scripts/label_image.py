@@ -5,9 +5,13 @@ from __future__ import print_function
 import argparse
 import sys
 import time
+import glob
 
 import numpy as np
 import tensorflow as tf
+import json
+
+
 
 def load_graph(model_file):
   graph = tf.Graph()
@@ -55,48 +59,72 @@ def load_labels(label_file):
 if __name__ == "__main__":
  
   
-  """Esta clasificacion se deberia hacer por cada imagen, ahora esta fijo a una"""
-
   model_file = "C:/Users/NG/Documents/caece-ia-v2/controller/tflow/tf_files/retrained_graph.pb"
   label_file = "C:/Users/NG/Documents/caece-ia-v2/controller/tflow/tf_files/retrained_labels.txt"
-  file_name = 'C:/Users/NG/Documents/caece-ia-v2/controller/tflow/examples/example7.jpg'
   input_height = 128
   input_width = 128
   input_mean = 0
   input_std = 128
   input_layer = "input"
   output_layer = "final_result"
+  output_txt = 'C:/Users/NG/Documents/caece-ia-v2/controller/tflow/output.txt'
+  data = {}  
+  data['followers'] = [] 
+  data['results'] = []   
+
 
   graph = load_graph(model_file)
-  t = read_tensor_from_image_file(file_name,
-                                  input_height=input_height,
-                                  input_width=input_width,
-                                  input_mean=input_mean,
-                                  input_std=input_std)
 
-  input_name = "import/" + input_layer
-  output_name = "import/" + output_layer
-  input_operation = graph.get_operation_by_name(input_name);
-  output_operation = graph.get_operation_by_name(output_name);
+ 
+  """A partir del archivos followers_usernames.txt armo un array
+  con sus respectivos directorios donde se van a guardar las imagenes"""
+  followers_list = []
+  with open('C:/Users/NG/Documents/caece-ia/server/src/followers/followers_usernames.txt','r') as data_file:
+    for line in data_file:
+      followers_list = line.strip().split(",")
+      for follower in followers_list:
+        """Itero las imagenes que hay en cada folder de follower y las clasifico"""
+        for filename in glob.glob("C:/Users/NG/Documents/caece-ia/server/src/followers/"+follower+'/*.jpg'): 
+            file_name = filename.replace('\\\\',"//")
+            print(filename.replace('\\\\',"//"))
+            t = read_tensor_from_image_file(file_name,
+                                        input_height=input_height,
+                                        input_width=input_width,
+                                        input_mean=input_mean,
+                                        input_std=input_std)
+            input_name = "import/" + input_layer
+            output_name = "import/" + output_layer
+            input_operation = graph.get_operation_by_name(input_name);
+            output_operation = graph.get_operation_by_name(output_name);
+            with tf.Session(graph=graph) as sess:
+              start = time.time()
+              results = sess.run(output_operation.outputs[0],
+                            {input_operation.outputs[0]: t})
+              end=time.time()
+            results = np.squeeze(results)
+            top_k = results.argsort()[-5:][::-1]
+            labels = load_labels(label_file)
 
-  with tf.Session(graph=graph) as sess:
-    start = time.time()
-    results = sess.run(output_operation.outputs[0],
-                      {input_operation.outputs[0]: t})
-    end=time.time()
-  results = np.squeeze(results)
+            template_desc = "{}"
+            template_perc = "{:0.5f}"
+            for i in top_k:
+              print (template_perc.format(results[i]))
+              if (float(template_perc.format(results[i])) > 0.60):
+                print(template_desc.format(labels[i]))
+            
+            """JSON"""
+            data['followers'].append({
+              follower: {
+                'mujer': '1',
+                'hombre': '0',
+                'animal': '0',
+                'tecnologia':'0'
+              },
+            })
+            print(data)
+                
 
-  top_k = results.argsort()[-5:][::-1]
-  labels = load_labels(label_file)
 
-  print('\nEvaluation time (1-image): {:.3f}s\n'.format(end-start))
-  template = "{} (score={:0.5f})"
 
-  output_txt = 'C:/Users/NG/Documents/caece-ia-v2/controller/tflow/output.txt'
-  with open(output_txt, 'a') as myfile:
-      myfile.write('\n');
-      myfile.write(file_name+'\n');
-      for i in top_k:
-        var1 = template.format(labels[i], results[i]);
-        print(var1);
-        myfile.write(var1+'\n');
+
+
