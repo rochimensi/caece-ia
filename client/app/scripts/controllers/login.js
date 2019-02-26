@@ -19,8 +19,7 @@
       $http.post($scope.host + "/api/login", {username: $scope.username, password: $scope.password})
         .then(function (results) {
           $localStorage.data = {
-            username: $scope.username,
-            profileImg: results.profile_image
+            username: $scope.username
           };
           $scope.go('home');
         })

@@ -342,38 +342,20 @@ COUNT
 }
 
 .count_followers {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 0 auto 40px;
 }
-.counter {
-  background-color: rgba(36, 39, 53, 0.04);
-  padding: 4%;
-  margin: 4%;
-  border-radius: 5px;
-}
-.count-title {
-  font-size: 40px;
-  font-weight: normal;
-  margin-top: 10px;
-  margin-bottom: 0;
-  text-align: center;
-}
-.count-text {
-  font-size: 13px;
-  font-weight: normal;
-  margin-top: 10px;
-  margin-bottom: 0;
-  text-align: center;
-}
-.fa-2x {
-  margin: 0 auto;
-  float: none;
-  display: table;
-  color: #DC6180;
+.count_followers .results_counter {
+  margin: 6% 0;
 }
 
+.count_followers h2{
+  font-size: 64px;
+  margin-bottom: 0;
+}
+
+.count_followers span{
+  font-size: 24px;
+}
 /*
 RESULTS FILTERS
  */

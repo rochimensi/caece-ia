@@ -8,3 +8,4 @@ const server = require('http').createServer(app);
 app.io = require('socket.io')(server);
 
 server.listen(port, () => logger.info(`Server started on port 3000`));
+server.timeout = 240000;

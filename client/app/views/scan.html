@@ -10,15 +10,13 @@
 </div>
 
 <div class="count_followers" ng-if="!controls.isLoading">
-    <div class="counter">
-        <i class="fa fa-address-book fa-2x"></i>
-        <h2 class="timer count-title count-number">300</h2>
-        <p class="count-text ">Seguidores detectados</p>
+    <div class="results_counter">
+        <counter-up total="scanFollowersTotal"></counter-up>
+        <span>Seguidores detectados</span>
     </div>
-    <div class="counter">
-        <i class="fa fa-image fa-2x"></i>
-        <h2 class="timer count-title count-number">2385</h2>
-        <p class="count-text ">Imágenes descargadas</p>
+    <div class="results_counter">
+        <counter-up total="scanImagesTotal"></counter-up>
+        <span>Imágenes descargadas</span>
     </div>
 </div>
 <a class="button_cta" ng-if="!controls.isLoading" ng-click="controls.step = 'classify'; scrollToTop()">Siguiente paso</a>

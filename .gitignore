@@ -1,8 +1,16 @@
 /controller/node_modules
 /server/node_modules
+/server/src/followers/images
+/server/src/combined.log
+/server/src/error.log
+/server/combined.log
 /client/node_modules
 /client/dist
 /client/.tmp
 /client/.sass-cache
 /client/bower_components
 
+.idea/
+
+
+/server/combined.log

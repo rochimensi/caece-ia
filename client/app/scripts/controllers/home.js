@@ -193,17 +193,7 @@
     }
 
     function downloadCSV() {
-      // TODO: populate with usernames from scan
-      Utils.jsonToCSV([{
-        'Username': 'rosario.mensi',
-        'Mujer': '1',
-        'Hombre': '',
-        'Genérico': '',
-        'Animales': '',
-        'Musica': '1',
-        'Deporte': '',
-        'Tecnologia': '1'
-      }, {
+      let sample = [{
         'Username': 'follower_username',
         'Mujer': '',
         'Hombre': '1',
@@ -212,7 +202,22 @@
         'Musica': '1',
         'Deporte': '1',
         'Tecnologia': ''
-      }], true, 'followers_clasificacion_manual' + (new Date().toISOString()).split('T')[0]);
+      }];
+      let rows = Object.keys($scope.followers).map(function(f) {
+        return {
+          'Username': f,
+          'Mujer': '',
+          'Hombre': '',
+          'Genérico': '',
+          'Animales': '',
+          'Musica': '',
+          'Deporte': '',
+          'Tecnologia': ''
+        };
+      });
+
+      sample = sample.concat(rows);
+      Utils.jsonToCSV(sample, true, 'followers_clasificacion_manual' + (new Date().toISOString()).split('T')[0]);
     }
 
     function toggleSelection(filters, filter) {
@@ -236,7 +241,9 @@
       $scope.controls.isLoading = true;
       $http.get($scope.host + "/api/crawl")
         .then(function (results) {
-          console.log(results);
+          $scope.scanFollowersTotal = Object.keys(results.followers).length;
+          $scope.followers = results.followers;
+          $scope.scanImagesTotal = results.imagenes;
         })
         .catch(function (error, response) {
           if(error.status === 401) {
@@ -246,18 +253,6 @@
         .finally(function() {
           $scope.controls.isLoading = false;
         });
-    }
-
-    function animateBars() {
-      $.each($(".bar-chart"), function() {
-        var $this = $(this),
-          total = $this.data("total"),
-          $targetBar = $this.find(".bar-chart--inner");
-        $targetBar.css("width", "0%");
-        setTimeout(function() {
-          $targetBar.css("width", total + "%");
-        }, 400);
-      });
     }
   }
 
