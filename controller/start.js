@@ -6,16 +6,15 @@ app.listen(3000, function() {
     console.log('server running on port 3000'); 
 } ) 
   
-/*http://localhost:3000/imageClassifier*/
-app.get('/imageClassifier', callIndex); 
+app.get('/secondClassification', secondClassification); 
 
+app.get('/firstClassification', firstClassification); 
 
-/*http://localhost:3000/nameClassifier*/
 app.get('/nameClassifier', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
   
-function callIndex(req, res) { 
+function secondClassification(req, res) { 
 
     var myPythonScriptPath = 'tflow/scripts/label_image.py';
 
@@ -35,3 +34,25 @@ function callIndex(req, res) {
         console.log('finished');
     });
 } 
+
+
+function firstClassification(req, res) { 
+
+    var myPythonScriptPath = 'tflow/scripts/first-classification.py';
+
+    // Use python shell
+    const {PythonShell} = require("python-shell");
+    var pyshell = new PythonShell(myPythonScriptPath);
+
+    pyshell.on('message', function (message) {
+        console.log(message);
+    });
+
+    pyshell.end(function (err) {
+        if (err){
+            throw err;
+        };
+
+        console.log('finished');
+    });
+}
