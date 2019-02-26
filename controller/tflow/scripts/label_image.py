@@ -70,8 +70,13 @@ if __name__ == "__main__":
   output_txt = 'C:/Users/NG/Documents/caece-ia-v2/controller/tflow/output.txt'
   data = {}  
   data['followers'] = [] 
-  data['results'] = []   
-
+  data['results'] = []  
+  tot_mujer = 0
+  tot_hombre = 0
+  tot_musico = 0
+  tot_tecno = 0
+  tot_animal = 0
+  tot_generic = 0
 
   graph = load_graph(model_file)
 
@@ -83,10 +88,17 @@ if __name__ == "__main__":
     for line in data_file:
       followers_list = line.strip().split(",")
       for follower in followers_list:
+        parc_mujer = 0
+        parc_hombre = 0
+        parc_musico = 0
+        parc_tecno = 0
+        parc_animal = 0
+        parc_generic = 0
+        parc_imagen = 0
         """Itero las imagenes que hay en cada folder de follower y las clasifico"""
         for filename in glob.glob("C:/Users/NG/Documents/caece-ia/server/src/followers/"+follower+'/*.jpg'): 
+            """aca habria que validar la foto de perfil y el nombre de usuario, aunque tambien hay que modularizar"""
             file_name = filename.replace('\\\\',"//")
-            print(filename.replace('\\\\',"//"))
             t = read_tensor_from_image_file(file_name,
                                         input_height=input_height,
                                         input_width=input_width,
@@ -108,23 +120,81 @@ if __name__ == "__main__":
             template_desc = "{}"
             template_perc = "{:0.5f}"
             for i in top_k:
-              print (template_perc.format(results[i]))
               if (float(template_perc.format(results[i])) > 0.60):
-                print(template_desc.format(labels[i]))
-            
-            """JSON"""
-            data['followers'].append({
+                parc_imagen += 1
+                label = template_desc.format(labels[i])
+                if (label == 'hombre'):
+                  parc_hombre += 1
+                elif (label == 'mujer'):
+                  parc_mujer += 1
+                elif (label == 'logo'):
+                  parc_generic += 1
+                elif (label == 'animal'):
+                  parc_animal += 1
+                elif (label == 'tecnologia'):
+                  parc_tecno += 1
+                else:
+                  parc_musico += 1
+        porc_mujer = parc_mujer/parc_imagen 
+        porc_hombre = parc_hombre/parc_imagen    
+        porc_generic = parc_generic/parc_imagen  
+        porc_animal = parc_animal/parc_imagen 
+        porc_tecno = parc_tecno/parc_imagen  
+        porc_musico = parc_musico/parc_imagen 
+
+        bol_mujer = 0
+        bol_hombre = 0
+        bol_generic = 0
+        bol_animal = 0
+        bol_tecno = 0
+        bol_musico = 0
+
+        if(porc_mujer > 0.8):
+          bol_mujer = 1
+          tot_mujer += 1
+        if(porc_hombre > 0.8):
+          bol_hombre = 1
+          tot_hombre += 1
+        if(porc_generic > 0.6):
+          bol_generic = 1
+          tot_generic += 1
+        if(porc_animal > 0.6):
+          bol_animal = 1
+          tot_animal += 1
+        if(porc_tecno > 0.6):
+          bol_tecno = 1
+          tot_tecno += 1
+        if(porc_musico > 0.6):
+          bol_musico = 1
+          tot_musico += 1
+
+
+        data['followers'].append({
               follower: {
-                'mujer': '1',
-                'hombre': '0',
-                'animal': '0',
-                'tecnologia':'0'
+                'mujer': bol_mujer,
+                'porcMujer':porc_mujer,
+                'hombre': bol_hombre,
+                'porcHombre': porc_hombre,
+                'animal': bol_animal,
+                'porcAnimal':porc_animal,
+                'tecnologia':bol_tecno,
+                'porcTecnologia':porc_tecno,
+                'musico':bol_musico,
+                'porcMusico':porc_musico,
+                'generico':bol_generic,
+                'porcGenerico':porc_generic
               },
-            })
-            print(data)
-                
+        })
 
+    data['results'].append({
+                'mujer': tot_mujer,
+                'hombre': tot_hombre,
+                'animal':tot_animal,
+                'tecnologia':tot_tecno,
+                'musico':tot_musico,
+                'generico':tot_generic
+    })    
+    print(data)
 
-
-
+      
 
