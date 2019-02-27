@@ -7,104 +7,535 @@
     </p>
     <p>La Matriz de Confusión aporta métricas para evaluar al clasificador considerando las predicciones positivas y negativas,
         y los valores reales positivos y negativos para cada clase.</p>
-    <!--Error: % de Predicciones incorrectas / total
-
-    = (FP + FN) / (TP + TN + FP + FN)
-
-    Accuracy: % de Predicciones correctas / total
-
-    = (TP + TN) / (TP + TN + FP + FN)
-
-    Precision: Cuántos items seleccionados son relevantes
-
-    = TP / (TP + FP)
-
-    Recall: Cuántos items relevantes fueron encontrados
-
-    = TP / (TP + FN)
-
-    F-Measure: media armónica entre Precision y Recall
-
-    = 2 x (Precision x Recall / ( Precision + Recall ))-->
 
     <div class="file__upload__control">
-        <span ng-show="!csvFilename" class="file__upload__inner">Archivo CSV..</span>
+        <span ng-show="!csvFilename" class="file__upload__inner">archivo.csv</span>
         <span ng-show="csvFilename" class="file__upload__inner">{{csvFilename}}</span>
-        <input id="csv-file" name="csv" class="upload" type="file" onchange="angular.element(this).scope().csvUploaded(this)"/>
+        <input id="csv-file" class="form-control upload" type="file" multiple=""
+               onchange="angular.element(this).scope().submitCSV()" required/>
 
         <div class="browse_button" onclick="document.getElementById('csv-file').value = null;
           document.getElementById('csv-file').click()">Abrir</div>
     </div>
+    <div class="input-error" ng-if="parseError">
+        <span>{{parseError}}</span>
+    </div>
 
-    <div class="validation">
-        <span class="results_container_title">Mujeres</span>
-        <div class="confusionMatrix_container">
-            <table class="confusionMatrix">
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td><strong>Predicción</strong></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Positivos</td>
-                    <td>Negativos</td>
-                    <td><strong>Total</strong></td>
-                </tr>
-                <tr>
-                    <td class="actual"><strong>Valor Real</strong></td>
-                    <td>Positivos</td>
-                    <td class="accuracy">5.000 (TP)</td>
-                    <td class="error">90 (FN)</td>
-                    <td>5090</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Negativos</td>
-                    <td class="error">120 (FP)</td>
-                    <td class="accuracy">1500 (TN)</td>
-                    <td>1620</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><strong>Total</strong></td>
-                    <td>5120</td>
-                    <td>1590</td>
-                    <td></td>
-                </tr>
-            </table>
-            <div class="metricas">
-                <div class="metrica error">
-                    <div>
-                        <h2>12%</h2>
-                        <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+    <div ng-if="matrices">
+        <div class="validation">
+            <span class="results_container_title">Mujeres</span>
+            <div class="confusionMatrix_container">
+                <table class="confusionMatrix">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Predicción</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Positivos</td>
+                        <td>Negativos</td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="actual"><strong>Valor Real</strong></td>
+                        <td>Positivos</td>
+                        <td class="accuracy">{{matrices.mujeres.tp}} (TP)</td>
+                        <td class="error">{{matrices.mujeres.fn}} (FN)</td>
+                        <td>{{matrices.mujeres.tp + matrices.mujeres.fn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Negativos</td>
+                        <td class="error">{{matrices.mujeres.fp}} (FP)</td>
+                        <td class="accuracy">{{matrices.mujeres.tn}} (TN)</td>
+                        <td>{{matrices.mujeres.fp + matrices.mujeres.tn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{matrices.mujeres.tp + matrices.mujeres.fp}}</td>
+                        <td>{{matrices.mujeres.fn + matrices.mujeres.tn}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="metricas">
+                    <div class="metrica error">
+                        <div>
+                            <h2>{{matrices.mujeres.error}}%</h2>
+                            <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+                        </div>
+                    </div>
+                    <div class="metrica accuracy">
+                        <div>
+                            <h2>{{matrices.mujeres.accuracy}}%</h2>
+                            <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Exactitud</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.mujeres.precision}}%</h2>
+                            <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.mujeres.recall}}%</h2>
+                            <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.mujeres.fmeasure}}%</h2>
+                            <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+                        </div>
                     </div>
                 </div>
-                <div class="metrica accuracy">
-                    <div>
-                        <h2>67%</h2>
-                        <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Accuracy</span>
+            </div>
+        </div>
+        <div class="validation">
+            <span class="results_container_title">Hombres</span>
+            <div class="confusionMatrix_container">
+                <table class="confusionMatrix">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Predicción</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Positivos</td>
+                        <td>Negativos</td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="actual"><strong>Valor Real</strong></td>
+                        <td>Positivos</td>
+                        <td class="accuracy">{{matrices.hombres.tp}} (TP)</td>
+                        <td class="error">{{matrices.hombres.fn}} (FN)</td>
+                        <td>{{matrices.hombres.tp + matrices.hombres.fn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Negativos</td>
+                        <td class="error">{{matrices.hombres.fp}} (FP)</td>
+                        <td class="accuracy">{{matrices.hombres.tn}} (TN)</td>
+                        <td>{{matrices.hombres.fp + matrices.hombres.tn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{matrices.hombres.tp + matrices.hombres.fp}}</td>
+                        <td>{{matrices.hombres.fn + matrices.hombres.tn}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="metricas">
+                    <div class="metrica error">
+                        <div>
+                            <h2>{{matrices.hombres.error}}%</h2>
+                            <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+                        </div>
+                    </div>
+                    <div class="metrica accuracy">
+                        <div>
+                            <h2>{{matrices.hombres.accuracy}}%</h2>
+                            <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Exactitud</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.hombres.precision}}%</h2>
+                            <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.hombres.recall}}%</h2>
+                            <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.hombres.fmeasure}}%</h2>
+                            <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+                        </div>
                     </div>
                 </div>
-                <div class="metrica">
-                    <div>
-                        <h2>67%</h2>
-                        <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+            </div>
+        </div>
+        <div class="validation">
+            <span class="results_container_title">Genérico</span>
+            <div class="confusionMatrix_container">
+                <table class="confusionMatrix">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Predicción</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Positivos</td>
+                        <td>Negativos</td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="actual"><strong>Valor Real</strong></td>
+                        <td>Positivos</td>
+                        <td class="accuracy">{{matrices.generico.tp}} (TP)</td>
+                        <td class="error">{{matrices.generico.fn}} (FN)</td>
+                        <td>{{matrices.generico.tp + matrices.generico.fn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Negativos</td>
+                        <td class="error">{{matrices.generico.fp}} (FP)</td>
+                        <td class="accuracy">{{matrices.generico.tn}} (TN)</td>
+                        <td>{{matrices.generico.fp + matrices.generico.tn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{matrices.generico.tp + matrices.generico.fp}}</td>
+                        <td>{{matrices.generico.fn + matrices.generico.tn}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="metricas">
+                    <div class="metrica error">
+                        <div>
+                            <h2>{{matrices.generico.error}}%</h2>
+                            <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+                        </div>
+                    </div>
+                    <div class="metrica accuracy">
+                        <div>
+                            <h2>{{matrices.generico.accuracy}}%</h2>
+                            <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Exactitud</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.generico.precision}}%</h2>
+                            <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.generico.recall}}%</h2>
+                            <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.generico.fmeasure}}%</h2>
+                            <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+                        </div>
                     </div>
                 </div>
-                <div class="metrica">
-                    <div>
-                        <h2>67%</h2>
-                        <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+            </div>
+        </div>
+        <div class="validation">
+            <span class="results_container_title">Animales</span>
+            <div class="confusionMatrix_container">
+                <table class="confusionMatrix">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Predicción</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Positivos</td>
+                        <td>Negativos</td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="actual"><strong>Valor Real</strong></td>
+                        <td>Positivos</td>
+                        <td class="accuracy">{{matrices.animales.tp}} (TP)</td>
+                        <td class="error">{{matrices.animales.fn}} (FN)</td>
+                        <td>{{matrices.animales.tp + matrices.animales.fn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Negativos</td>
+                        <td class="error">{{matrices.animales.fp}} (FP)</td>
+                        <td class="accuracy">{{matrices.animales.tn}} (TN)</td>
+                        <td>{{matrices.animales.fp + matrices.animales.tn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{matrices.animales.tp + matrices.animales.fp}}</td>
+                        <td>{{matrices.animales.fn + matrices.animales.tn}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="metricas">
+                    <div class="metrica error">
+                        <div>
+                            <h2>{{matrices.animales.error}}%</h2>
+                            <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+                        </div>
+                    </div>
+                    <div class="metrica accuracy">
+                        <div>
+                            <h2>{{matrices.animales.accuracy}}%</h2>
+                            <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Exactitud</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.animales.precision}}%</h2>
+                            <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.animales.recall}}%</h2>
+                            <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.animales.fmeasure}}%</h2>
+                            <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+                        </div>
                     </div>
                 </div>
-                <div class="metrica">
-                    <div>
-                        <h2>67%</h2>
-                        <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+            </div>
+        </div>
+        <div class="validation">
+            <span class="results_container_title">Deporte</span>
+            <div class="confusionMatrix_container">
+                <table class="confusionMatrix">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Predicción</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Positivos</td>
+                        <td>Negativos</td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="actual"><strong>Valor Real</strong></td>
+                        <td>Positivos</td>
+                        <td class="accuracy">{{matrices.deporte.tp}} (TP)</td>
+                        <td class="error">{{matrices.deporte.fn}} (FN)</td>
+                        <td>{{matrices.deporte.tp + matrices.deporte.fn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Negativos</td>
+                        <td class="error">{{matrices.deporte.fp}} (FP)</td>
+                        <td class="accuracy">{{matrices.deporte.tn}} (TN)</td>
+                        <td>{{matrices.deporte.fp + matrices.deporte.tn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{matrices.deporte.tp + matrices.deporte.fp}}</td>
+                        <td>{{matrices.deporte.fn + matrices.deporte.tn}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="metricas">
+                    <div class="metrica error">
+                        <div>
+                            <h2>{{matrices.deporte.error}}%</h2>
+                            <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+                        </div>
+                    </div>
+                    <div class="metrica accuracy">
+                        <div>
+                            <h2>{{matrices.deporte.accuracy}}%</h2>
+                            <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Exactitud</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.deporte.precision}}%</h2>
+                            <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.deporte.recall}}%</h2>
+                            <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.deporte.fmeasure}}%</h2>
+                            <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="validation">
+            <span class="results_container_title">Música</span>
+            <div class="confusionMatrix_container">
+                <table class="confusionMatrix">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Predicción</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Positivos</td>
+                        <td>Negativos</td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="actual"><strong>Valor Real</strong></td>
+                        <td>Positivos</td>
+                        <td class="accuracy">{{matrices.musica.tp}} (TP)</td>
+                        <td class="error">{{matrices.musica.fn}} (FN)</td>
+                        <td>{{matrices.musica.tp + matrices.musica.fn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Negativos</td>
+                        <td class="error">{{matrices.musica.fp}} (FP)</td>
+                        <td class="accuracy">{{matrices.musica.tn}} (TN)</td>
+                        <td>{{matrices.musica.fp + matrices.musica.tn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{matrices.musica.tp + matrices.musica.fp}}</td>
+                        <td>{{matrices.musica.fn + matrices.musica.tn}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="metricas">
+                    <div class="metrica error">
+                        <div>
+                            <h2>{{matrices.musica.error}}%</h2>
+                            <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+                        </div>
+                    </div>
+                    <div class="metrica accuracy">
+                        <div>
+                            <h2>{{matrices.musica.accuracy}}%</h2>
+                            <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Exactitud</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.musica.precision}}%</h2>
+                            <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.musica.recall}}%</h2>
+                            <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.musica.fmeasure}}%</h2>
+                            <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="validation">
+            <span class="results_container_title">Tecnología</span>
+            <div class="confusionMatrix_container">
+                <table class="confusionMatrix">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>Predicción</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Positivos</td>
+                        <td>Negativos</td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="actual"><strong>Valor Real</strong></td>
+                        <td>Positivos</td>
+                        <td class="accuracy">{{matrices.tecnologia.tp}} (TP)</td>
+                        <td class="error">{{matrices.tecnologia.fn}} (FN)</td>
+                        <td>{{matrices.tecnologia.tp + matrices.tecnologia.fn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Negativos</td>
+                        <td class="error">{{matrices.tecnologia.fp}} (FP)</td>
+                        <td class="accuracy">{{matrices.tecnologia.tn}} (TN)</td>
+                        <td>{{matrices.tecnologia.fp + matrices.tecnologia.tn}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><strong>Total</strong></td>
+                        <td>{{matrices.tecnologia.tp + matrices.tecnologia.fp}}</td>
+                        <td>{{matrices.tecnologia.fn + matrices.tecnologia.tn}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="metricas">
+                    <div class="metrica error">
+                        <div>
+                            <h2>{{matrices.tecnologia.error}}%</h2>
+                            <span title="% de Predicciones incorrectas / Total ((FP + FN) / (TP + TN + FP + FN))">Error</span>
+                        </div>
+                    </div>
+                    <div class="metrica accuracy">
+                        <div>
+                            <h2>{{matrices.tecnologia.accuracy}}%</h2>
+                            <span title="% de Predicciones correctas / Total ((TP + TN) / (TP + TN + FP + FN))">Exactitud</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.tecnologia.precision}}%</h2>
+                            <span title="Cuántos items seleccionados son relevantes (TP / (TP + FP))">Precision</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.tecnologia.recall}}%</h2>
+                            <span title="Cuántos items relevantes fueron encontrados (TP / (TP + FN))">Recall</span>
+                        </div>
+                    </div>
+                    <div class="metrica">
+                        <div>
+                            <h2>{{matrices.tecnologia.fmeasure}}%</h2>
+                            <span title="Media armónica entre Precision y Recall (2 x (Precision x Recall / ( Precision + Recall )))">F-Measure</span>
+                        </div>
                     </div>
                 </div>
             </div>

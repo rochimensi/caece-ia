@@ -10,8 +10,14 @@
   function Utils($timeout) {
 
     return {
-      jsonToCSV: jsonToCSV
+      jsonToCSV: jsonToCSV,
+      isValidCSVFile: isValidCSVFile
     };
+
+    function isValidCSVFile(fileName) {
+      var fileExtension = fileName.split('.').pop().toLowerCase();
+      return _.includes(['csv'], fileExtension);
+    }
 
     function clickLink(url, keepWindow, options) {
       var config = {
