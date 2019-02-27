@@ -130,6 +130,10 @@ body .login_fields .login_error {
   margin-top: 5px;
   padding-left: 65px;
 }
+.input-error {
+  color: #DC6180;
+  font-size: 14px;
+}
 body .login_fields {
   height: 208px;
   position: absolute;

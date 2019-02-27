@@ -15,8 +15,9 @@
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/styles.css">
-    <script src="../bower_components/countUp.js/dist/countUp.min.js"></script>
     <!-- endbuild -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../bower_components/countUp.js/dist/countUp.min.js"></script>
   </head>
   <body ng-app="clientApp" ng-controller="MainController">
 
@@ -29,14 +30,14 @@
       var HOST = "http://localhost:3000";
     </script>
     <!-- build:js(.) scripts/vendor.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
     <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
     <script src="bower_components/ngstorage/ngStorage.js"></script>
@@ -45,6 +46,9 @@
     <script src="bower_components/ng-dialog/js/ngDialog.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/checklist-model/checklist-model.js"></script>
+    <script src="bower_components/js-xlsx/dist/xlsx.core.min.js"></script>
+    <script src="bower_components/angular-js-xlsx/angular-js-xlsx.js"></script>
+    <script src="bower_components/papa-parse/jquery.parse.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -55,7 +59,7 @@
     <script src="scripts/angular-countUp.min.js"></script>
     <script src="scripts/countUp.js"></script>
 
-    <script src="scripts/services/messageService.js"></script>
+    <script src="scripts/services/matrixService.js"></script>
 
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/login.js"></script>

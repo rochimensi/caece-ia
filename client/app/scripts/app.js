@@ -12,7 +12,8 @@ angular
     'angularTrix',
     'checklist-model',
     'countUpModule',
-    'googlechart'
+    'googlechart',
+    'angular-js-xlsx'
   ])
   .config(statesConfig)
   .config(angularJWTConfig)
