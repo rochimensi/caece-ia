@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -11,7 +13,11 @@ import numpy as np
 import tensorflow as tf
 import json
 import requests
+import unidecode
+import unicodedata
+import re
 
+from unicodedata import normalize
 
 def classification(graph):
   label_file = "C:/Users/NG/Documents/caece-ia-v2/controller/tflow/tf_files/retrained_labels.txt"
@@ -31,6 +37,7 @@ def classification(graph):
   tot_tecno = 0
   tot_animal = 0
   tot_generic = 0
+  tot_deporte = 0
 
   """A partir del archivos followers_usernames.txt armo un array
   con sus respectivos directorios donde se van a guardar las imagenes"""
@@ -46,6 +53,7 @@ def classification(graph):
         parc_animal = 0
         parc_generic = 0
         parc_imagen = 0
+        parc_deporte = 0
         """Itero las imagenes que hay en cada folder de follower y las clasifico"""
         for filename in glob.glob("C:/Users/NG/Documents/caece-ia/server/src/followers/images/"+follower+'/*.jpg'): 
             file_name = filename.replace('\\\\',"//")
@@ -82,6 +90,8 @@ def classification(graph):
                   parc_animal += 1
                 elif (label == 'tecnologia'):
                   parc_tecno += 1
+                elif (label == 'deporte'):
+                  parc_deporte +=1
                 else:
                   parc_musico += 1
         
@@ -91,6 +101,7 @@ def classification(graph):
         porc_animal = 0
         porc_tecno = 0
         porc_musico = 0
+        porc_deporte = 0
         if (parc_imagen != 0):
           porc_mujer = parc_mujer/parc_imagen 
           porc_hombre = parc_hombre/parc_imagen    
@@ -98,6 +109,7 @@ def classification(graph):
           porc_animal = parc_animal/parc_imagen 
           porc_tecno = parc_tecno/parc_imagen  
           porc_musico = parc_musico/parc_imagen 
+          porc_deporte = parc_deporte/parc_imagen
 
         bol_mujer = 0
         bol_hombre = 0
@@ -105,6 +117,7 @@ def classification(graph):
         bol_animal = 0
         bol_tecno = 0
         bol_musico = 0
+        bol_deporte = 0
 
         json_data = json.loads(json.dumps(firstClassification(graph,follower)))
 
@@ -123,9 +136,12 @@ def classification(graph):
         if(porc_tecno > 0.6):
           bol_tecno = 1
           tot_tecno += 1
-        if(porc_musico > 0.6):
+        if(porc_musico > 0.55):
           bol_musico = 1
           tot_musico += 1
+        if (porc_deporte > 0.6):
+          bol_deporte = 1
+          tot_deporte += 1
 
 
         data['followers'].append({
@@ -141,7 +157,9 @@ def classification(graph):
                 'musica':bol_musico,
                 'porcMusico':porc_musico,
                 'generico':bol_generic,
-                'porcGenerico':porc_generic
+                'porcGenerico':porc_generic,
+                'deporte':bol_deporte,
+                'porcDeporte':porc_deporte
               },
         })
 
@@ -151,6 +169,7 @@ def classification(graph):
                 'animales':tot_animal,
                 'tecnologia':tot_tecno,
                 'musica':tot_musico,
+                'deporte':tot_deporte,
                 'generico':tot_generic
     })    
     
@@ -209,8 +228,12 @@ def firstClassification(graph,follower):
   name = ""
   if (user_data[follower].get('fullName')):
     user_name = user_data[follower]['fullName']
-    
     name = user_name.split(" ",1)[0]
+    name = name.replace('\xc3\xa1','a')
+    name = name.replace('\xc3\xa9','e')
+    name = name.replace('\xc3\xad','i')
+    name = name.replace('\xc3\xb3','o')
+    name = name.replace('\xc3\xba','u')
     """call Genderize API"""
     url = 'https://api.genderize.io/?name='+name
     response = requests.get(url)
