@@ -24,7 +24,7 @@ def classification(graph):
   output_txt = 'C:/Users/NG/Documents/caece-ia-v2/controller/tflow/output.txt'
   data = {}  
   data['followers'] = [] 
-  data['results'] = []  
+  data['results'] = []
   tot_mujer = 0
   tot_hombre = 0
   tot_musico = 0
@@ -47,7 +47,7 @@ def classification(graph):
         parc_generic = 0
         parc_imagen = 0
         """Itero las imagenes que hay en cada folder de follower y las clasifico"""
-        for filename in glob.glob("C:/Users/NG/Documents/caece-ia/server/src/followers/"+follower+'/*.jpg'): 
+        for filename in glob.glob("C:/Users/NG/Documents/caece-ia/server/src/followers/images/"+follower+'/*.jpg'): 
             file_name = filename.replace('\\\\',"//")
             t = read_tensor_from_image_file(file_name,
                                         input_height=input_height,
@@ -66,11 +66,10 @@ def classification(graph):
             results = np.squeeze(results)
             top_k = results.argsort()[-5:][::-1]
             labels = load_labels(label_file)
-
             template_desc = "{}"
             template_perc = "{:0.5f}"
             for i in top_k:
-              if (float(template_perc.format(results[i])) > 0.60):
+              if (float(template_perc.format(results[i])) > 0.80):
                 parc_imagen += 1
                 label = template_desc.format(labels[i])
                 if (label == 'hombre'):
@@ -86,12 +85,19 @@ def classification(graph):
                 else:
                   parc_musico += 1
         
-        porc_mujer = parc_mujer/parc_imagen 
-        porc_hombre = parc_hombre/parc_imagen    
-        porc_generic = parc_generic/parc_imagen  
-        porc_animal = parc_animal/parc_imagen 
-        porc_tecno = parc_tecno/parc_imagen  
-        porc_musico = parc_musico/parc_imagen 
+        porc_mujer = 0
+        porc_hombre = 0
+        porc_generic = 0
+        porc_animal = 0
+        porc_tecno = 0
+        porc_musico = 0
+        if (parc_imagen != 0):
+          porc_mujer = parc_mujer/parc_imagen 
+          porc_hombre = parc_hombre/parc_imagen    
+          porc_generic = parc_generic/parc_imagen  
+          porc_animal = parc_animal/parc_imagen 
+          porc_tecno = parc_tecno/parc_imagen  
+          porc_musico = parc_musico/parc_imagen 
 
         bol_mujer = 0
         bol_hombre = 0
@@ -166,7 +172,7 @@ def firstClassification(graph,follower):
   parc_mujer = 0
   parc_hombre = 0
   parc_generic = 0
-  file_name = "C:/Users/NG/Documents/caece-ia/server/src/followers/"+follower+'/'+follower+'.jpg'
+  file_name = "C:/Users/NG/Documents/caece-ia/server/src/followers/images/"+follower+'/'+follower+'.jpg'
   """Clasifico unicamente la imagen de perfil"""
   t = read_tensor_from_image_file(file_name,
                                         input_height=input_height,
@@ -197,16 +203,22 @@ def firstClassification(graph,follower):
         parc_mujer += 1
       elif (label == 'logo'):
         parc_generic += 1
-        
-  """call Genderize API"""
-  name = "julieta"
-  url = 'https://api.genderize.io/?name='+name
-  response = requests.get(url)
-  json_data = json.loads(response.text)
-  if (json_data['gender'] == 'male'):
-    parc_hombre = 1
-  elif (json_data['gender'] == 'female'):
-    parc_mujer = 1
+
+  json_user_file=open("C:/Users/NG/Documents/caece-ia/server/src/followers/followers.json").read()
+  user_data = json.loads(json_user_file)
+  name = ""
+  if (user_data[follower].get('fullName')):
+    user_name = user_data[follower]['fullName']
+    
+    name = user_name.split(" ",1)[0]
+    """call Genderize API"""
+    url = 'https://api.genderize.io/?name='+name
+    response = requests.get(url)
+    json_data = json.loads(response.text)
+    if (json_data.get('gender') and json_data['gender'] == 'male'):
+      parc_hombre = 1
+    elif (json_data.get('gender') and json_data['gender'] == 'female'):
+      parc_mujer = 1
         
   data.append({
                 'mujer': parc_mujer,
