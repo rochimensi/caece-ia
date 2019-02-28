@@ -1,3 +1,4 @@
+let self; 
 class ClassifierController {
 
   constructor() {

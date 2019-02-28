@@ -128,11 +128,11 @@ def classification(graph):
                 'porcMujer':porc_mujer,
                 'hombre': bol_hombre,
                 'porcHombre': porc_hombre,
-                'animal': bol_animal,
+                'animales': bol_animal,
                 'porcAnimal':porc_animal,
                 'tecnologia':bol_tecno,
                 'porcTecnologia':porc_tecno,
-                'musico':bol_musico,
+                'musica':bol_musico,
                 'porcMusico':porc_musico,
                 'generico':bol_generic,
                 'porcGenerico':porc_generic
@@ -142,9 +142,9 @@ def classification(graph):
     data['results'].append({
                 'mujer': tot_mujer,
                 'hombre': tot_hombre,
-                'animal':tot_animal,
+                'animales':tot_animal,
                 'tecnologia':tot_tecno,
-                'musico':tot_musico,
+                'musica':tot_musico,
                 'generico':tot_generic
     })    
     
