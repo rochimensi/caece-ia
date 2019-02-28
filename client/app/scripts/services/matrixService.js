@@ -8,33 +8,8 @@
   function MatrixService() {
 
     return {
-      getError: getError,
-      getAccuracy: getAccuracy,
-      getPrecision: getPrecision,
-      getRecall: getRecall,
-      getFMeasure: getFMeasure,
       getMatrix: getMatrix
     };
-
-    function getError() {
-
-    }
-
-    function getAccuracy() {
-
-    }
-
-    function getPrecision() {
-
-    }
-
-    function getRecall() {
-
-    }
-
-    function getFMeasure() {
-
-    }
 
     function getMatrix(criterio, real, predicted) {
       var matrix = {

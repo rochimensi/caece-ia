@@ -1,7 +1,7 @@
 <h1>Resultados de Segmentación</h1>
 <div class="results_container_header">
     <div class="results_counter">
-        <counter-up total="total"></counter-up>
+        <counter-up total="totalClassified"></counter-up>
         <span>Seguidores</span>
     </div>
     <div class="results_pieChart">
@@ -22,16 +22,16 @@
             </div>
             <ul>
                 <li>
-                    <input type="checkbox" name="selectedFilters[]" value="mujeres" ng-checked="audienceSelection.indexOf('mujeres') > -1"
-                           ng-click="toggleSelection(audienceSelection, 'mujeres'); refreshAudience()"><span>Mujeres</span>
+                    <input type="checkbox" name="selectedFilters[]" value="mujer" ng-checked="audienceSelection.indexOf('mujer') > -1"
+                           ng-click="toggleSelection(audienceSelection, 'mujer'); refreshWithFilters()"><span>Mujeres</span>
                 </li>
                 <li>
-                    <input type="checkbox" name="selectedFilters[]" value="hombres" ng-checked="audienceSelection.indexOf('hombres') > -1"
-                           ng-click="toggleSelection(audienceSelection, 'hombres'); refreshAudience()"><span>Hombres</span>
+                    <input type="checkbox" name="selectedFilters[]" value="hombre" ng-checked="audienceSelection.indexOf('hombre') > -1"
+                           ng-click="toggleSelection(audienceSelection, 'hombre'); refreshWithFilters()"><span>Hombres</span>
                 </li>
                 <li>
                     <input type="checkbox" name="selectedFilters[]" value="generico" ng-checked="audienceSelection.indexOf('generico') > -1"
-                           ng-click="toggleSelection(audienceSelection, 'generico'); refreshAudience()"><span>Genérico</span>
+                           ng-click="toggleSelection(audienceSelection, 'generico'); refreshWithFilters()"><span>Genérico</span>
                 </li>
             </ul>
         </div>
@@ -42,93 +42,73 @@
             </div>
             <ul>
                 <li>
-                    <input type="checkbox" name="selectedFilters[]" value="animal" ng-checked="infoSelection.indexOf('animal') > -1"
-                           ng-click="toggleSelection(infoSelection, 'animales')">Animales
+                    <input type="checkbox" name="selectedFilters[]" value="animales" ng-checked="infoSelection.indexOf('animales') > -1"
+                           ng-click="toggleSelection(infoSelection, 'animales'); refreshWithFilters();">Animales
                 </li>
                 <li>
-                    <input type="checkbox" name="selectedFilters[]" value="deportista" ng-checked="infoSelection.indexOf('deportista') > -1"
-                           ng-click="toggleSelection(infoSelection, 'deporte')">Deporte
+                    <input type="checkbox" name="selectedFilters[]" value="deporte" ng-checked="infoSelection.indexOf('deporte') > -1"
+                           ng-click="toggleSelection(infoSelection, 'deporte'); refreshWithFilters();">Deporte
                 </li>
                 <li>
-                    <input type="checkbox" name="selectedFilters[]" value="musico" ng-checked="infoSelection.indexOf('musico') > -1"
-                           ng-click="toggleSelection(infoSelection, 'musica')">Música
+                    <input type="checkbox" name="selectedFilters[]" value="musica" ng-checked="infoSelection.indexOf('musica') > -1"
+                           ng-click="toggleSelection(infoSelection, 'musica'); refreshWithFilters();">Música
                 </li>
                 <li>
                     <input type="checkbox" name="selectedFilters[]" value="tecnologia" ng-checked="infoSelection.indexOf('tecnologia') > -1"
-                           ng-click="toggleSelection(infoSelection, 'tecnologia')">Tecnología
+                           ng-click="toggleSelection(infoSelection, 'tecnologia'); refreshWithFilters();">Tecnología
                 </li>
             </ul>
         </div>
     </div>
     <div class="results_metrics">
         <div class="results_metrics_filters">
-            <span ng-repeat="filter in audienceSelection" ng-class="{'mujeres':filter === 'mujeres', 'generico':filter === 'generico',
-            'hombres':filter === 'hombres'}">{{filter | uppercase}}</span>
+            <span ng-repeat="filter in audienceSelection" ng-class="{'mujeres':filter === 'mujer', 'generico':filter === 'generico',
+            'hombres':filter === 'hombre'}">{{filter | uppercase}}</span>
             <div class="results_metrics_filters--secondary">
                 <span ng-repeat="filter in infoSelection">{{filter | uppercase}}</span>
             </div>
         </div>
         <div class="results_metrics_top">
-            <div class="results_counter">
-                <counter-up total="filtersTotal"></counter-up>
-                <span>Audiencia por criterio de información</span>
+            <div class="results_counter_container">
+                <div class="results_counter">
+                    <h2>{{filtersTotal}}</h2>
+                    <span>Audiencia seleccionada</span>
+                </div>
             </div>
             <div class="barChart-container">
-                <div ng-if="!infoSelection.length">
-                    <span>Selecciona un filtro de Información..</span>
+                <div ng-if="!infoSelection.length || !audienceSelection.length">
+                    <span>Selecciona al menos un filtro de Información y audiencia..</span>
                 </div>
-                <div ng-if="infoSelection.length" dir="rtl" google-chart chart="columnChartData" style="{{columnChartData.cssStyle}}" select="selected(selectedItem)" on-ready=""></div>
+                <div ng-if="infoSelection.length && audienceSelection.length" dir="rtl" google-chart chart="columnChartData" style="{{columnChartData.cssStyle}}" select="selected(selectedItem)" on-ready=""></div>
             </div>
         </div>
         <div class="results_metrics_bottom">
             <table>
                 <thead>
-                    <tr>
-                        <th></th>
-                        <th>Username</th>
-                        <th>Mujer</th>
-                        <th>Hombre</th>
-                        <th>Genérico</th>
-                        <th>Animales</th>
-                        <th>Deporte</th>
-                        <th>Música</th>
-                        <th>Tecnología</th>
-                    </tr>
+                <tr>
+                    <th></th>
+                    <th>Username</th>
+                    <th>Mujer</th>
+                    <th>Hombre</th>
+                    <th>Genérico</th>
+                    <th>Animales</th>
+                    <th>Deporte</th>
+                    <th>Música</th>
+                    <th>Tecnología</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td>rosario.mensi</td>
-                        <td><i class="fa fa-check-circle"/></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><i class="fa fa-check-circle"/></td>
-                        <td><i class="fa fa-check-circle"/></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>rosario.mensi</td>
-                        <td><i class="fa fa-check-circle"/></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><i class="fa fa-check-circle"/></td>
-                        <td><i class="fa fa-check-circle"/></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>rosario.mensi</td>
-                        <td><i class="fa fa-check-circle"/></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><i class="fa fa-check-circle"/></td>
-                        <td><i class="fa fa-check-circle"/></td>
-                    </tr>
+                <tr ng-repeat="item in table.filteredFollowers">
+                    <td><img ng-src="{{followers[item].image}}" style="width: 64px; height: 64px; border-radius: 999px;"></td>
+                    <td>{{item}}</td>
+                    <td ng-class="{green: classifiedFollowers.followers[item].mujer}">{{classifiedFollowers.followers[item].porcMujer}}%</td>
+                    <td ng-class="{green: classifiedFollowers.followers[item].hombre}">{{classifiedFollowers.followers[item].porcHombre}}%</td>
+                    <td ng-class="{green: classifiedFollowers.followers[item].generico}">{{classifiedFollowers.followers[item].porcGenerico}}%</td>
+                    <td ng-class="{green: classifiedFollowers.followers[item].animales}">{{classifiedFollowers.followers[item].porcAnimales}}%</td>
+                    <td ng-class="{green: classifiedFollowers.followers[item].deporte}">{{classifiedFollowers.followers[item].porcDeporte}}%</td>
+                    <td ng-class="{green: classifiedFollowers.followers[item].musica}">{{classifiedFollowers.followers[item].porcMusica}}%</td>
+                    <td ng-class="{green: classifiedFollowers.followers[item].tecnologia}">{{classifiedFollowers.followers[item].porcTecnologia}}%</td>
+                </tr>
                 </tbody>
             </table>
         </div>
