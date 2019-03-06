@@ -20,11 +20,11 @@ import re
 from unicodedata import normalize
 
 def classification(graph):
-  label_file = "C:/Users/NG/Documents/caece-ia-v2/controller/tflow/tf_files/retrained_labels.txt"
-  input_height = 128
-  input_width = 128
-  input_mean = 0
-  input_std = 128
+  label_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_labels.txt"
+  input_height = 224
+  input_width = 224
+  input_mean = 224
+  input_std = 224
   input_layer = "input"
   output_layer = "final_result"
   output_txt = 'C:/Users/NG/Documents/caece-ia-v2/controller/tflow/output.txt'
@@ -121,25 +121,25 @@ def classification(graph):
 
         json_data = json.loads(json.dumps(firstClassification(graph,follower)))
 
-        if(porc_mujer > 0.8 or json_data[0]["mujer"] == 1):
+        if(porc_mujer > 0.5 or json_data[0]["mujer"] == 1):
           bol_mujer = 1
           tot_mujer += 1
-        if(porc_hombre > 0.8 or json_data[0]["hombre"] == 1):
+        if(porc_hombre > 0.5 or json_data[0]["hombre"] == 1):
           bol_hombre = 1
           tot_hombre += 1
-        if(porc_generic > 0.6 or json_data[0]["generico"] == 1):
+        if(porc_generic > 0.5 or json_data[0]["generico"] == 1):
           bol_generic = 1
           tot_generic += 1
-        if(porc_animal > 0.6):
+        if(porc_animal > 0.4):
           bol_animal = 1
           tot_animal += 1
-        if(porc_tecno > 0.6):
+        if(porc_tecno > 0.4):
           bol_tecno = 1
           tot_tecno += 1
-        if(porc_musico > 0.55):
+        if(porc_musico > 0.4):
           bol_musico = 1
           tot_musico += 1
-        if (porc_deporte > 0.6):
+        if (porc_deporte > 0.4):
           bol_deporte = 1
           tot_deporte += 1
 
@@ -176,11 +176,11 @@ def classification(graph):
   return data
 
 def firstClassification(graph,follower):
-  label_file = "C:/Users/NG/Documents/caece-ia-v2/controller/tflow/tf_files/retrained_labels.txt"
-  input_height = 128
-  input_width = 128
-  input_mean = 0
-  input_std = 128
+  label_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_labels.txt"
+  input_height = 224
+  input_width = 224
+  input_mean = 224
+  input_std = 224
   input_layer = "input"
   output_layer = "final_result"
   tot_mujer = 0
@@ -214,7 +214,7 @@ def firstClassification(graph,follower):
   template_desc = "{}"
   template_perc = "{:0.5f}"
   for i in top_k:
-    if (float(template_perc.format(results[i])) > 0.80):
+    if (float(template_perc.format(results[i])) > 0.75):
       label = template_desc.format(labels[i])
       if (label == 'hombre'):
         parc_hombre += 1
@@ -222,34 +222,34 @@ def firstClassification(graph,follower):
         parc_mujer += 1
       elif (label == 'logo'):
         parc_generic += 1
+  
+  if (parc_hombre == 0 and parc_mujer == 0 and parc_generic == 0):
+    json_user_file=open("C:/Users/NG/Documents/caece-ia/server/src/followers/followers.json",encoding="utf8").read()
+    user_data = json.loads(json_user_file)
+    name = ""
+    if (user_data[follower].get('fullName')):
+      user_name = user_data[follower]['fullName']
+      name = user_name.split(" ",1)[0]
+      name = name.replace('\xc3\xa1','a')
+      name = name.replace('\xc3\xa9','e')
+      name = name.replace('\xc3\xad','i')
+      name = name.replace('\xc3\xb3','o')
+      name = name.replace('\xc3\xba','u')
+      url = 'https://api.genderize.io/?name='+name
+      response = requests.get(url)
+      json_data = json.loads(response.text)
+      if (json_data.get('gender') and json_data['gender'] == 'male'):
+        parc_hombre = 1
+      elif (json_data.get('gender') and json_data['gender'] == 'female'):
+        parc_mujer = 1 
+  
 
-  json_user_file=open("C:/Users/NG/Documents/caece-ia/server/src/followers/followers.json").read()
-  user_data = json.loads(json_user_file)
-  name = ""
-  if (user_data[follower].get('fullName')):
-    user_name = user_data[follower]['fullName']
-    name = user_name.split(" ",1)[0]
-    name = name.replace('\xc3\xa1','a')
-    name = name.replace('\xc3\xa9','e')
-    name = name.replace('\xc3\xad','i')
-    name = name.replace('\xc3\xb3','o')
-    name = name.replace('\xc3\xba','u')
-    """call Genderize API"""
-    url = 'https://api.genderize.io/?name='+name
-    response = requests.get(url)
-    json_data = json.loads(response.text)
-    if (json_data.get('gender') and json_data['gender'] == 'male'):
-      parc_hombre = 1
-    elif (json_data.get('gender') and json_data['gender'] == 'female'):
-      parc_mujer = 1
-        
   data.append({
                 'mujer': parc_mujer,
                 'hombre': parc_hombre,
                 'generico':parc_generic,
               },
   )
-
   return data
 
 def load_graph(model_file):
@@ -263,8 +263,8 @@ def load_graph(model_file):
 
   return graph
 
-def read_tensor_from_image_file(file_name, input_height=299, input_width=299,
-				input_mean=0, input_std=255):
+def read_tensor_from_image_file(file_name, input_height=224, input_width=224,
+				input_mean=224, input_std=224):
   input_name = "file_reader"
   output_name = "normalized"
   file_reader = tf.read_file(file_name, input_name)
@@ -297,7 +297,7 @@ def load_labels(label_file):
 
 if __name__ == "__main__":
  
-  model_file = "C:/Users/NG/Documents/caece-ia-v2/controller/tflow/tf_files/retrained_graph.pb"
+  model_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_graph.pb"
   graph = load_graph(model_file)
   final_results = classification(graph)
   print(final_results)
