@@ -6,12 +6,12 @@ const util = require('util');
 const Q = require('q');
 const Path = require('path');
 const Axios = require('axios');
-var countFiles = require('count-files')
+var countFiles = require('count-files');
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 const mkdir = util.promisify(fs.mkdir);
 
-const FOLLOWERS_COUNT = 377;
+const FOLLOWERS_COUNT = 383;
 
 let driver, self;
 
@@ -97,6 +97,7 @@ class SeleniumController {
           await self.getFollowersModalChunk(followersUsernames, followersListItems, followersJSON);
 
           await writeFile(path.join(__dirname, '../../followers/followers_usernames.txt'), followersUsernames.join(','));
+          await writeFile(path.join(__dirname, '../../followers/followers.json'), JSON.stringify(followersJSON));
 
           console.log("Followers files written!");
         }
@@ -105,10 +106,11 @@ class SeleniumController {
 
         await writeFile(path.join(__dirname, '../../followers/followers.json'), JSON.stringify(followersJSON));
 
-        let stats = countFiles(dir, function (err, results) {
+        const imagesDir = Path.resolve(__dirname, `../../followers/images/`);
+        let stats = countFiles(imagesDir, async (err, results) => {
+          await driver.quit();
           res.status(200).send({followers: followersJSON, imagenes: results.files});
         });
-        res.status(200).send(followersJSON);
       } finally {
 
       }

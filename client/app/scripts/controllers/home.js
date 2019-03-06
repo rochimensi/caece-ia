@@ -14,7 +14,7 @@
     $scope.controls = {
       isLoading: false,
       reachedEnd: true, //TODO initialize as false
-      step: 'results'
+      step: 'scan'
     };
 
     $scope.audienceSelection = ['generico', 'hombre', 'mujer'];
@@ -113,8 +113,8 @@
       }
     };
 
-    //scan();
-    showResults();
+    scan();
+    //showResults();
 
     function selected(selectedItem){
       alert("You selected " + $scope.chart.data.cols[selectedItem.column].label + " in " +
@@ -134,9 +134,9 @@
       $scope.controls.isLoading = true;
       $http.get($scope.host + "/api/crawl")
         .then(function (results) {
-          $scope.scanFollowersTotal = Object.keys(results.followers).length;
-          $scope.followers = results.followers;
-          $scope.scanImagesTotal = results.imagenes;
+          $scope.scanFollowersTotal = Object.keys(results.data.followers).length;
+          $scope.followers = results.data.followers;
+          $scope.scanImagesTotal = results.data.imagenes;
         })
         .catch(function (error, response) {
           if(error.status === 401) {
