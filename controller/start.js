@@ -1,7 +1,9 @@
 var express = require('express'); 
 var path = require('path');
+var fs = require('fs');
 var app = express(); 
-  
+
+ 
 app.listen(3000, function() { 
     console.log('server running on port 3000'); 
 } ) 
@@ -24,5 +26,10 @@ function classify(req, res) {
         if (err){
             throw err;
         };
+        console.log("OK")
+        fs.readFile(path.join(__dirname, '../server/src/followers/classification.txt'), 'utf8', function(err, contents) {
+            res.status(200).send(contents);
+        });
+       
     });
 }

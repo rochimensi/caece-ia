@@ -13,11 +13,7 @@ import numpy as np
 import tensorflow as tf
 import json
 import requests
-import unidecode
-import unicodedata
-import re
 
-from unicodedata import normalize
 
 def classification(graph):
   label_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_labels.txt"
@@ -27,7 +23,6 @@ def classification(graph):
   input_std = 224
   input_layer = "input"
   output_layer = "final_result"
-  output_txt = 'C:/Users/NG/Documents/caece-ia-v2/controller/tflow/output.txt'
   data = {}  
   data['followers'] = [] 
   data['results'] = []
@@ -46,17 +41,21 @@ def classification(graph):
     for line in data_file:
       followers_list = line.strip().split(",")
       for follower in followers_list:
-        parc_mujer = 0
-        parc_hombre = 0
         parc_musico = 0
         parc_tecno = 0
         parc_animal = 0
-        parc_generic = 0
         parc_imagen = 0
         parc_deporte = 0
+        porc_mujer = 0
+        porc_hombre = 0
+        porc_generic = 0
         """Itero las imagenes que hay en cada folder de follower y las clasifico"""
+        print("Comenzando clasificacion posteos del follower:")
+        print(follower)
         for filename in glob.glob("C:/Users/NG/Documents/caece-ia/server/src/followers/images/"+follower+'/*.jpg'): 
             file_name = filename.replace('\\\\',"//")
+            print("Leyendo imagen:")
+            print(file_name)  
             t = read_tensor_from_image_file(file_name,
                                         input_height=input_height,
                                         input_width=input_width,
@@ -80,13 +79,7 @@ def classification(graph):
               if (float(template_perc.format(results[i])) > 0.80):
                 parc_imagen += 1
                 label = template_desc.format(labels[i])
-                if (label == 'hombre'):
-                  parc_hombre += 1
-                elif (label == 'mujer'):
-                  parc_mujer += 1
-                elif (label == 'logo'):
-                  parc_generic += 1
-                elif (label == 'animal'):
+                if (label == 'animal'):
                   parc_animal += 1
                 elif (label == 'tecnologia'):
                   parc_tecno += 1
@@ -95,17 +88,11 @@ def classification(graph):
                 else:
                   parc_musico += 1
         
-        porc_mujer = 0
-        porc_hombre = 0
-        porc_generic = 0
         porc_animal = 0
         porc_tecno = 0
         porc_musico = 0
         porc_deporte = 0
         if (parc_imagen != 0):
-          porc_mujer = parc_mujer/parc_imagen 
-          porc_hombre = parc_hombre/parc_imagen    
-          porc_generic = parc_generic/parc_imagen  
           porc_animal = parc_animal/parc_imagen 
           porc_tecno = parc_tecno/parc_imagen  
           porc_musico = parc_musico/parc_imagen 
@@ -119,16 +106,22 @@ def classification(graph):
         bol_musico = 0
         bol_deporte = 0
 
+        print("Comenzando clasificacion individual del follower:")
+        print(follower)
         json_data = json.loads(json.dumps(firstClassification(graph,follower)))
-
-        if(porc_mujer > 0.5 or json_data[0]["mujer"] == 1):
+        print("Fin clasificacion individual del follower")
+        
+        if(json_data[0]["mujer"] == 1):
           bol_mujer = 1
+          porc_mujer = json_data[0]["porcMujer"]
           tot_mujer += 1
-        if(porc_hombre > 0.5 or json_data[0]["hombre"] == 1):
+        if(json_data[0]["hombre"] == 1):
           bol_hombre = 1
+          porc_hombre = json_data[0]["porcHombre"]
           tot_hombre += 1
-        if(porc_generic > 0.5 or json_data[0]["generico"] == 1):
+        if(json_data[0]["generico"] == 1):
           bol_generic = 1
+          porc_generic = json_data[0]["porcGenerico"]
           tot_generic += 1
         if(porc_animal > 0.4):
           bol_animal = 1
@@ -143,35 +136,39 @@ def classification(graph):
           bol_deporte = 1
           tot_deporte += 1
 
+        newData = {}
+        newData[follower] = {
+          'mujer': bol_mujer,
+          'porcMujer':porc_mujer,
+          'hombre': bol_hombre,
+          'porcHombre': porc_hombre,
+          'animales': bol_animal,
+          'porcAnimal':porc_animal,
+          'tecnologia':bol_tecno,
+          'porcTecnologia':porc_tecno,
+          'musica':bol_musico,
+          'porcMusico':porc_musico,
+          'generico':bol_generic,
+          'porcGenerico':porc_generic,
+          'deporte':bol_deporte,
+          'porcDeporte':porc_deporte
+        }
 
-        data['followers'].append({
-              follower: {
-                'mujer': bol_mujer,
-                'porcMujer':porc_mujer,
-                'hombre': bol_hombre,
-                'porcHombre': porc_hombre,
-                'animales': bol_animal,
-                'porcAnimal':porc_animal,
-                'tecnologia':bol_tecno,
-                'porcTecnologia':porc_tecno,
-                'musica':bol_musico,
-                'porcMusico':porc_musico,
-                'generico':bol_generic,
-                'porcGenerico':porc_generic,
-                'deporte':bol_deporte,
-                'porcDeporte':porc_deporte
-              },
-        })
+        data['followers'].append(newData)
 
-    data['results'].append({
-                'mujer': tot_mujer,
-                'hombre': tot_hombre,
-                'animales':tot_animal,
-                'tecnologia':tot_tecno,
-                'musica':tot_musico,
-                'deporte':tot_deporte,
-                'generico':tot_generic
-    })    
+    newDataTotals = {
+      'mujer': tot_mujer,
+      'hombre': tot_hombre,
+      'generico':tot_generic
+    }
+
+    data['results'].append(newDataTotals)
+
+
+
+  with open('C:/Users/NG/Documents/caece-ia/server/src/followers/classification.txt', 'w') as outfile:  
+    json.dump(data, outfile)
+      
     
   return data
 
@@ -191,6 +188,9 @@ def firstClassification(graph,follower):
   parc_mujer = 0
   parc_hombre = 0
   parc_generic = 0
+  porc_mujer = 0
+  porc_hombre = 0
+  porc_generic = 0
   file_name = "C:/Users/NG/Documents/caece-ia/server/src/followers/images/"+follower+'/'+follower+'.jpg'
   """Clasifico unicamente la imagen de perfil"""
   t = read_tensor_from_image_file(file_name,
@@ -218,10 +218,13 @@ def firstClassification(graph,follower):
       label = template_desc.format(labels[i])
       if (label == 'hombre'):
         parc_hombre += 1
+        porc_hombre = template_perc.format(results[i])
       elif (label == 'mujer'):
         parc_mujer += 1
+        porc_mujer = template_perc.format(results[i])
       elif (label == 'logo'):
         parc_generic += 1
+        porc_generic = template_perc.format(results[i])
   
   if (parc_hombre == 0 and parc_mujer == 0 and parc_generic == 0):
     json_user_file=open("C:/Users/NG/Documents/caece-ia/server/src/followers/followers.json",encoding="utf8").read()
@@ -235,19 +238,26 @@ def firstClassification(graph,follower):
       name = name.replace('\xc3\xad','i')
       name = name.replace('\xc3\xb3','o')
       name = name.replace('\xc3\xba','u')
+      print("Comenzando clasificacion del nombre del follower de nombre:")
+      print(name)  
       url = 'https://api.genderize.io/?name='+name
       response = requests.get(url)
       json_data = json.loads(response.text)
       if (json_data.get('gender') and json_data['gender'] == 'male'):
         parc_hombre = 1
       elif (json_data.get('gender') and json_data['gender'] == 'female'):
-        parc_mujer = 1 
+        parc_mujer = 1
+      print("Fin clasificacion del nombre del follower")  
+
   
 
   data.append({
                 'mujer': parc_mujer,
+                'porcMujer':porc_mujer,
                 'hombre': parc_hombre,
+                'porcHombre': porc_hombre,
                 'generico':parc_generic,
+                'porcGenerico': porc_generic
               },
   )
   return data
@@ -296,11 +306,13 @@ def load_labels(label_file):
   return label
 
 if __name__ == "__main__":
- 
+  output_txt = 'C:/Users/NG/Documents/caece-ia/controller/tflow/output.txt'
   model_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_graph.pb"
   graph = load_graph(model_file)
   final_results = classification(graph)
+ 
   print(final_results)
+
 
 
 
