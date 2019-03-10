@@ -107,7 +107,7 @@ def classification(graph):
                     parc_tecno += 1
                   elif (label == 'deporte'):
                     parc_deporte +=1
-                  else:
+                  elif (label == 'musicos'):  
                     parc_musico += 1
           
           porc_animal = 0
