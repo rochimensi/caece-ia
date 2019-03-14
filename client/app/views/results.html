@@ -57,6 +57,7 @@
                     <input type="checkbox" name="selectedFilters[]" value="tecnologia" ng-checked="infoSelection.indexOf('tecnologia') > -1"
                            ng-click="toggleSelection(infoSelection, 'tecnologia'); refreshWithFilters();">Tecnología
                 </li>
+                <li><a ng-click="infoSelection = []; refreshWithFilters();">Limpiar filtros</a></li>
             </ul>
         </div>
     </div>
@@ -82,36 +83,38 @@
                 <div ng-if="infoSelection.length && audienceSelection.length" dir="rtl" google-chart chart="columnChartData" style="{{columnChartData.cssStyle}}" select="selected(selectedItem)" on-ready=""></div>
             </div>
         </div>
-        <div class="results_metrics_bottom">
-            <table>
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Username</th>
-                    <th>Mujer</th>
-                    <th>Hombre</th>
-                    <th>Genérico</th>
-                    <th>Animales</th>
-                    <th>Deporte</th>
-                    <th>Música</th>
-                    <th>Tecnología</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="item in table.filteredFollowers">
-                    <td><img ng-src="{{followers[item].image}}" style="width: 64px; height: 64px; border-radius: 999px;"></td>
-                    <td>{{item}}</td>
-                    <td ng-class="{green: classifiedFollowers.followers[item].mujer}">{{classifiedFollowers.followers[item].porcMujer}}%</td>
-                    <td ng-class="{green: classifiedFollowers.followers[item].hombre}">{{classifiedFollowers.followers[item].porcHombre}}%</td>
-                    <td ng-class="{green: classifiedFollowers.followers[item].generico}">{{classifiedFollowers.followers[item].porcGenerico}}%</td>
-                    <td ng-class="{green: classifiedFollowers.followers[item].animales}">{{classifiedFollowers.followers[item].porcAnimales}}%</td>
-                    <td ng-class="{green: classifiedFollowers.followers[item].deporte}">{{classifiedFollowers.followers[item].porcDeporte}}%</td>
-                    <td ng-class="{green: classifiedFollowers.followers[item].musica}">{{classifiedFollowers.followers[item].porcMusica}}%</td>
-                    <td ng-class="{green: classifiedFollowers.followers[item].tecnologia}">{{classifiedFollowers.followers[item].porcTecnologia}}%</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
+</div>
+<div class="results_metrics_bottom">
+    <table>
+        <thead>
+        <tr>
+            <!--<th></th>-->
+            <th></th>
+            <th>Username</th>
+            <th>Mujer</th>
+            <th>Hombre</th>
+            <th>Genérico</th>
+            <th>Animales</th>
+            <th>Deporte</th>
+            <th>Música</th>
+            <th>Tecnología</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in table.filteredFollowers">
+            <!--<td>{{$index + 1}}</td>-->
+            <td><img ng-src="{{followers[item].image}}" style="width: 64px; height: 64px; border-radius: 999px;"></td>
+            <td><a ng-href="{{'https://www.instagram.com/' + item + '/'}}" target="_blank">{{item}}</a></td>
+            <td ng-class="{green: classifiedFollowers.followers[item].mujer}">{{(classifiedFollowers.followers[item].porcMujer * 1).toFixed(2)}}%</td>
+            <td ng-class="{green: classifiedFollowers.followers[item].hombre}">{{(classifiedFollowers.followers[item].porcHombre * 1).toFixed(2)}}%</td>
+            <td ng-class="{green: classifiedFollowers.followers[item].generico}">{{(classifiedFollowers.followers[item].porcGenerico * 1).toFixed(2)}}%</td>
+            <td ng-class="{green: classifiedFollowers.followers[item].animales}">{{(classifiedFollowers.followers[item].porcAnimal * 1).toFixed(2)}}%</td>
+            <td ng-class="{green: classifiedFollowers.followers[item].deporte}">{{(classifiedFollowers.followers[item].porcDeporte * 1).toFixed(2)}}%</td>
+            <td ng-class="{green: classifiedFollowers.followers[item].musica}">{{(classifiedFollowers.followers[item].porcMusico * 1).toFixed(2)}}%</td>
+            <td ng-class="{green: classifiedFollowers.followers[item].tecnologia}">{{(classifiedFollowers.followers[item].porcTecnologia * 1).toFixed(2)}}%</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <a class="button_cta" ng-if="!controls.isLoading" ng-click="controls.step = 'validate'; controls.reachedEnd = true; scrollToTop()">Siguiente paso</a>

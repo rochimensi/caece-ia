@@ -3,14 +3,14 @@
     <p>En este último paso se pueden validar los resultados del algoritmo de clasificación brindando las clases correctas
         para cada seguidor.</p>
     <p>Las clases manualmente elegidas para cada uno de tus seguidores deben ser ingresadas en un archivo .csv que
-        respete el formato de este template (clickea <a href="" ng-click="downloadCSV()">aquí</a> para descargarlo).
+        respete el formato de este template (clickea <a href="" ng-click="downloadCSV()"><strong>aquí</strong></a> para descargarlo).
     </p>
     <p>La Matriz de Confusión aporta métricas para evaluar al clasificador considerando las predicciones positivas y negativas,
         y los valores reales positivos y negativos para cada clase.</p>
 
     <div class="file__upload__control">
-        <span ng-show="!csvFilename" class="file__upload__inner">archivo.csv</span>
-        <span ng-show="csvFilename" class="file__upload__inner">{{csvFilename}}</span>
+        <span ng-show="!controls.csvFileName" class="file__upload__inner">archivo.csv</span>
+        <span ng-show="controls.csvFileName" class="file__upload__inner">{{controls.csvFileName}}</span>
         <input id="csv-file" class="form-control upload" type="file" multiple=""
                onchange="angular.element(this).scope().submitCSV()" required/>
 
@@ -19,6 +19,10 @@
     </div>
     <div class="input-error" ng-if="parseError">
         <span>{{parseError}}</span>
+    </div>
+    <div class="results_counter results_counter--metrics" ng-if="uploadedFollowers">
+        <counter-up total="controls.totalUploaded"></counter-up>
+        <span>Seguidores en el archivo</span>
     </div>
 
     <div ng-if="matrices">

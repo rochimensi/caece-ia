@@ -11,7 +11,7 @@ const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 const mkdir = util.promisify(fs.mkdir);
 
-const FOLLOWERS_COUNT = 383;
+const FOLLOWERS_COUNT = 386;
 
 let driver, self;
 
@@ -123,33 +123,38 @@ class SeleniumController {
   async getFollowersModalChunk(followersUsernames, followersListItems, followersJSON) {
     console.log("Building Followers JSON..");
     await Promise.all(followersListItems.map(async (listItem) => {
-      let e = await listItem.findElement(By.css('a'));
-      let href = await e.getAttribute('href'); //e.g. https://www.instagram.com/rosario.mensi/
-      let username = href.replace('https://www.instagram.com/', '');
-      username = username.replace('/', '');
-      if (followersUsernames.indexOf(username) === -1) {
-        followersUsernames.push(username);
-        console.log("Added follower to followers_usernames");
-      }
-      if(!followersJSON[username] || !followersJSON[username].image) {
-        if(!followersJSON[username]) {
-          followersJSON[username] = {};
-          console.log("Added follower to followers JSON");
+      try {
+        let e = await listItem.findElement(By.css('a'));
+        let href = await e.getAttribute('href'); //e.g. https://www.instagram.com/rosario.mensi/
+        let username = href.replace('https://www.instagram.com/', '');
+        username = username.replace('/', '');
+        if (followersUsernames.indexOf(username) === -1) {
+          followersUsernames.push(username);
+          console.log("Added follower to followers_usernames");
         }
-        let image;
-        let style = await e.getAttribute('style');
-        if (style === "width: 30px; height: 30px;") {
-          image = await e.findElement(By.css('img'));
+        if (!followersJSON[username] || !followersJSON[username].image) {
+          if (!followersJSON[username]) {
+            followersJSON[username] = {};
+            console.log("Added follower to followers JSON");
+          }
+          let image;
+          let style = await e.getAttribute('style');
+          if (style === "width: 30px; height: 30px;") {
+            image = await e.findElement(By.css('img'));
+          }
+          if (image) {
+            followersJSON[username].image = await image.getAttribute('src');
+            console.log("Added image for " + username + " on followers JSON");
+          } else {
+            let imageWithStory = await listItem.findElements(By.css('span img'));
+            imageWithStory = imageWithStory[0];
+            followersJSON[username].image = await imageWithStory.getAttribute('src');
+            console.log("Added image for " + username + " on followers JSON");
+          }
         }
-        if (image) {
-          followersJSON[username].image = await image.getAttribute('src');
-          console.log("Added image for " + username +  " on followers JSON");
-        } else {
-          let imageWithStory = await listItem.findElements(By.css('span img'));
-          imageWithStory = imageWithStory[0];
-          followersJSON[username].image = await imageWithStory.getAttribute('src');
-          console.log("Added image for " + username +  " on followers JSON");
-        }
+      } catch(err) {
+        console.log(err);
+        throw err;
       }
     }));
   }
