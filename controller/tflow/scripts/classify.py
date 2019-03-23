@@ -17,10 +17,10 @@ import requests
 
 
 def classification(graph):
-  label_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_labels.txt"
-  input_txt_followers = "C:/Users/NG/Documents/caece-ia/server/src/followers/followers_usernames.txt"
-  output_txt_path = "C:/Users/NG/Documents/caece-ia/server/src/followers/classification.txt"
-  img_folder_path = "C:/Users/NG/Documents/caece-ia/server/src/followers/images/"
+  label_file = "../controller/tflow/tf_files/retrained_labels.txt"
+  input_txt_followers = "../server/src/followers/followers_usernames.txt"
+  output_txt_path = "../server/src/followers/classification.txt"
+  img_folder_path = "../server/src/followers/images/"
   input_height = 224
   input_width = 224
   input_mean = 224
@@ -213,9 +213,9 @@ def classification(graph):
   return data
 
 def firstClassification(graph,follower):
-  label_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_labels.txt"
-  input_json_followers = "C:/Users/NG/Documents/caece-ia/server/src/followers/followers.json"
-  file_name = "C:/Users/NG/Documents/caece-ia/server/src/followers/images/"+follower+'/'+follower+'.jpg'
+  label_file = "../controller/tflow/tf_files/retrained_labels.txt"
+  input_json_followers = "../server/src/followers/followers.json"
+  file_name = "../server/src/followers/images/"+follower+'/'+follower+'.jpg'
   genderize_endpoint_url = "https://api.genderize.io/"
   input_height = 224
   input_width = 224
@@ -401,8 +401,7 @@ def load_labels(label_file):
   return label
 
 if __name__ == "__main__":
-  output_txt = 'C:/Users/NG/Documents/caece-ia/controller/tflow/output.txt'
-  model_file = "C:/Users/NG/Documents/caece-ia/controller/tflow/tf_files/retrained_graph.pb"
+  model_file = "../controller/tflow/tf_files/retrained_graph.pb"
   graph = load_graph(model_file)
   final_results = classification(graph)
  
