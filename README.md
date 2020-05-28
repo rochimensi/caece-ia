@@ -1,5 +1,5 @@
 # caece-ia
-Proyecto Final Universidad CAECE: Clasificador de usuarios de Facebook con reconocimiento de imágenes
+Proyecto Final Universidad CAECE: Clasificador de usuarios de Instagram con reconocimiento de imágenes
 
 ## SETUP
 
